@@ -118,3 +118,4 @@ if __name__ == "__main__":
         model.predict(get_data(args.test_data))
     )
     print(loss(results, get_labels(args.test_label)))
+    print(results)
