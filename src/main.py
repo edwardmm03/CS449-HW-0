@@ -119,3 +119,9 @@ if __name__ == "__main__":
     )
     print(loss(results, get_labels(args.test_label)))
     print(results)
+    f = open("output.txt","w")
+    for r in results:
+        cur = str(r)
+        f.write(cur)
+        f.write(" ")
+    f.close()
