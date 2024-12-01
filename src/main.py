@@ -99,6 +99,7 @@ if __name__ == "__main__":
         default="../data/test/a2-test-label.txt",
         help="path to test data label file",
     )
+    arg_parser.add_argument("--output_file", "-o", default="../output.txt")
     arg_parser.add_argument(
         "--network_file",
         "-n",
@@ -113,15 +114,17 @@ if __name__ == "__main__":
 
     model: Model = Model()
     model.new(1000, 2)
-    model.fit(train_data, 100, 10)
+    model.fit(train_data, 100, 100)
     results: np.ndarray[np.float32] = revert_labels(
         model.predict(get_data(args.test_data))
     )
-    print(loss(results, get_labels(args.test_label)))
-    print(results)
-    f = open("output.txt","w")
-    for r in results:
-        cur = str(r)
-        f.write(cur)
-        f.write(" ")
-    f.close()
+    print(f"loss: {loss(results, revert_labels(get_labels(args.test_label)))}")
+    print(
+        "number incorrect:"
+        f" {np.sum(np.absolute(convert_labels(results) - get_labels(args.test_label)))}"
+    )
+    print(f"results:\n{results}")
+    with get_file(args.output_file).open("w") as file:
+        for result in results:
+            file.write(f"{result} ")
+    model.save(args.network_file)
